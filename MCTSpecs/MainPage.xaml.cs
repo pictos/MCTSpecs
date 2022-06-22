@@ -2,23 +2,25 @@
 
 public partial class MainPage : ContentPage
 {
-	int count = 0;
 
 	public MainPage()
 	{
 		InitializeComponent();
 	}
 
-	private void OnCounterClicked(object sender, EventArgs e)
+	async void OnCounterClicked(object sender, EventArgs e)
 	{
-		count++;
-
-		if (count == 1)
-			CounterBtn.Text = $"Clicked {count} time";
-		else
-			CounterBtn.Text = $"Clicked {count} times";
-
-		SemanticScreenReader.Announce(CounterBtn.Text);
+		string size = string.Empty,
+			density = string.Empty;
+#if ANDROID
+		var ctx = this.Handler.MauiContext.Context;
+		size = MainActivity.GetSizeName(ctx);
+		density = MainActivity.GetDeviceDensity(ctx);
+#endif
+		var result = $"Size: {size}, DPI: {density}";
+		await DisplayAlert("Values", result, "Ok");
+		lbl.Text = result;
+		lbl.WidthRequest = 2000;
+		lbl.TextColor = Colors.White;
 	}
 }
-
